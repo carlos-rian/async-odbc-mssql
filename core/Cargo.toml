@@ -3,13 +3,7 @@ name = "async-obdc-mssql-core"
 version = "0.0.1"
 edition = "2021"
 
-rate-type = ["cdylib"]
-
 [dependencies]
-tiberius = "0.8.0"
-futures = {version = "0.3.21" }
-tokio = {version = "1.17.0", features = ["full"]}
-tokio-util = {version = "0.7.1", features = ["full"]}
-anyhow = "1.0.56"
-pyo3 = { version = "0.16.4", features = ["extension-module"] }
-pyo3-asyncio = { version = "0.16.0", features = ["attributes", "async-std-runtime"] }
+sqlx = { version = "0.5.13", features = [ "runtime-tokio-native-tls" , "mssql" ] }
+tokio = { version = "1.17.0", features = ["full"] }
+pyo3-asyncio = "0.16.0"
