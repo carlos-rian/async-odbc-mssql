@@ -1,14 +1,31 @@
 use quaint::{prelude::*, single::Quaint};
+use serde::{Deserialize, Serialize};
+
+#[derive(Serialize, Deserialize, PartialEq, Debug, Clone)]
+pub struct Procedure {
+    /// Procedure name.
+    pub name: String,
+    /// The definition of the procedure.
+    pub definition: Option<String>,
+}
+
 
 #[tokio::main]
 async fn main() -> Result<(), quaint::error::Error> {
     let conn = Quaint::new("file:///tmp/example.db").await?;
-    let result = conn.select(Select::default().value(1)).await?;
+    let sql = "select 1 as number;";
+    let rows = conn.query_raw(sql, &[]).await?;
 
-    assert_eq!(
-        Some(1),
-        result.into_iter().nth(0).and_then(|row| row[0].as_i64()),
-    );
+    let mut procedures = Vec::with_capacity(rows.len());
+
+    for row in rows.into_iter() {
+        procedures.push(Procedure {
+            name: row.get_expect_string("name"),
+            definition: row.get_string("definition"),
+        });
+    }
+
+    println!("{:#?}", data);
 
     Ok(())
 }
