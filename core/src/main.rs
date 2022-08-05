@@ -1,24 +1,14 @@
-
-use quaint::prelude::Query;
-
-async fn query() -> Result<(), Error> {//Result<Vec<sqlx::mssql::MssqlRow>, Error> {
-    let conn_uri = "mssql://sa:Super&-23@localhost:1433/master";
-
-    let query = "
-        SELECT *
-        FROM TempTest
-    ";
-
-    let conn = MssqlPool::connect(conn_uri).await?;
-
-    let rows = sqlx::query(query).fetch_all(&conn).await?;
-
-    println!("{}", rows.len());
-    Ok(())
-}
+use quaint::{prelude::*, single::Quaint};
 
 #[tokio::main]
-async fn main() -> Result<(), sqlx::Error> {
-    let _row = query().await?;
+async fn main() -> Result<(), quaint::error::Error> {
+    let conn = Quaint::new("file:///tmp/example.db").await?;
+    let result = conn.select(Select::default().value(1)).await?;
+
+    assert_eq!(
+        Some(1),
+        result.into_iter().nth(0).and_then(|row| row[0].as_i64()),
+    );
+
     Ok(())
 }
