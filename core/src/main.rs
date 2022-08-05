@@ -1,8 +1,5 @@
 
-use sqlx::mssql::MssqlPool;
-use sqlx;
-use sqlx::Error;
-
+use quaint::prelude::Query;
 
 async fn query() -> Result<(), Error> {//Result<Vec<sqlx::mssql::MssqlRow>, Error> {
     let conn_uri = "mssql://sa:Super&-23@localhost:1433/master";

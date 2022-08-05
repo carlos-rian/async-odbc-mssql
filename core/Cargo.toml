@@ -4,6 +4,6 @@ version = "0.0.1"
 edition = "2021"
 
 [dependencies]
-sqlx = { version = "0.5.13", features = [ "runtime-tokio-native-tls" , "mssql" ] }
 tokio = { version = "1.17.0", features = ["full"] }
 pyo3-asyncio = "0.16.0"
+quaint = "0.1.13"
