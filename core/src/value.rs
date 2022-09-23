@@ -1,11 +1,11 @@
 use bigdecimal::{BigDecimal, FromPrimitive};
 use chrono::{DateTime, NaiveDate, Utc};
-use prisma_models::PrismaValue;
-//use prisma_value::ConversionFailure;
-use crate::prisma_value::ConversionFailure;
+use crate::base::PrismaValue;
+use crate::base::PrismaValueResult;
+use crate::base::ConversionFailure;
 use quaint::Value;
 
-pub fn to_prisma_value(quaint_value: Value<'_>) -> crate::Result<PrismaValue> {
+pub fn to_prisma_value(quaint_value: Value<'_>) -> PrismaValueResult<PrismaValue> {
     let val = match quaint_value {
         Value::Int32(i) => i.map(|i| PrismaValue::Int(i as i64)).unwrap_or(PrismaValue::Null),
         Value::Int64(i) => i.map(PrismaValue::Int).unwrap_or(PrismaValue::Null),

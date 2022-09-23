@@ -3,6 +3,7 @@ use crate::value::to_prisma_value;
 use quaint::connector::ResultSet;
 
 pub fn try_convert(model_projection: &ModelProjection, result_set: ResultSet) -> crate::Result<SelectionResult> {
+    
     let columns: Vec<String> = result_set.columns().iter().map(|c| c.to_string()).collect();
     let mut record_projection = SelectionResult::default();
 

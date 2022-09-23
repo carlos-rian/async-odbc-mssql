@@ -1,8 +1,3 @@
-pub mod arithmetic;
-
-mod error;
-
-
 use bigdecimal::{BigDecimal, FromPrimitive, ToPrimitive};
 use chrono::prelude::*;
 use serde::{ser::Serializer, Deserialize, Deserializer, Serialize};
@@ -10,12 +5,14 @@ use serde::de::Unexpected;
 use std::{convert::TryFrom, fmt, str::FromStr};
 use uuid::Uuid;
 use error::DomainError;
-use super::{TypeIdentifier};
+use types::TypeIdentifier;
+
 
 pub use error::ConversionFailure;
-pub type PrismaValueResult<T> = std::result::Result<T, ConversionFailure>;
 pub type PrismaListValue = Vec<PrismaValue>;
-//pub type Result<T> = std::result::Result<T, DomainError>;
+pub type PrismaValueResult<T> = std::result::Result<T, ConversionFailure>;
+pub type PrismaValueExtensionResult<T> = std::result::Result<T, DomainError>;
+
 
 
 #[derive(Debug, PartialEq, Clone, Eq, Hash, Serialize, Deserialize, PartialOrd, Ord)]
@@ -385,13 +382,14 @@ impl TryFrom<PrismaValue> for String {
 }
 
 
+
 pub trait PrismaValueExtensions {
-    fn coerce(self, to_type: &TypeIdentifier) -> crate::Result<PrismaValue>;
+    fn coerce(self, to_type: &TypeIdentifier) -> PrismaValueExtensionResult<PrismaValue>;
 }
 
 impl PrismaValueExtensions for PrismaValue {
     // Todo this is not exhaustive for now.
-    fn coerce(self, to_type: &TypeIdentifier) -> crate::Result<PrismaValue> {
+    fn coerce(self, to_type: &TypeIdentifier) -> PrismaValueExtensionResult<PrismaValue> {
         let coerced = match (self, to_type) {
             // Trivial cases
             (PrismaValue::Null, _) => PrismaValue::Null,
@@ -436,7 +434,7 @@ impl PrismaValueExtensions for PrismaValue {
             (PrismaValue::List(list), typ) => PrismaValue::List(
                 list.into_iter()
                     .map(|val| val.coerce(typ))
-                    .collect::<crate::Result<Vec<_>>>()?,
+                    .collect::<PrismaValueExtensionResult<Vec<_>>>()?,
             ),
 
             // Invalid coercion
