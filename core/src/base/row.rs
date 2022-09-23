@@ -4,11 +4,12 @@ use serde::{ser::Serializer, Deserialize, Deserializer, Serialize};
 use serde::de::Unexpected;
 use std::{convert::TryFrom, fmt, str::FromStr};
 use uuid::Uuid;
-use error::DomainError;
-use types::TypeIdentifier;
+
+use super::error::ConversionFailure;
+use super::error::DomainError;
+use super::types::TypeIdentifier;
 
 
-pub use error::ConversionFailure;
 pub type PrismaListValue = Vec<PrismaValue>;
 pub type PrismaValueResult<T> = std::result::Result<T, ConversionFailure>;
 pub type PrismaValueExtensionResult<T> = std::result::Result<T, DomainError>;
@@ -65,7 +66,7 @@ pub fn decode_bytes(s: &str) -> PrismaValueResult<Vec<u8>> {
 }
 
 impl TryFrom<serde_json::Value> for PrismaValue {
-    type Error = error::ConversionFailure;
+    type Error = super::error::ConversionFailure;
 
     fn try_from(v: serde_json::Value) -> PrismaValueResult<Self> {
         match v {

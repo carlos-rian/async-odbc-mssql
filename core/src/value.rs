@@ -1,8 +1,8 @@
 use bigdecimal::{BigDecimal, FromPrimitive};
 use chrono::{DateTime, NaiveDate, Utc};
-use crate::base::PrismaValue;
-use crate::base::PrismaValueResult;
-use crate::base::ConversionFailure;
+use super::base::row::PrismaValue;
+use super::base::row::PrismaValueResult;
+use super::base::error::ConversionFailure;
 use quaint::Value;
 
 pub fn to_prisma_value(quaint_value: Value<'_>) -> PrismaValueResult<PrismaValue> {
