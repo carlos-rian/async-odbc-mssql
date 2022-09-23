@@ -27,6 +27,8 @@ async fn sql_test() -> Result<(), ConversionFailure> {
     //println!("{:#?}", rows);
     Ok(())
 }
+
+
 #[tokio::main]
 async fn main() -> Result<(), ConversionFailure> {
     sql_test().await?;
