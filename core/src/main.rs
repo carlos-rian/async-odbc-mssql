@@ -1,8 +1,9 @@
-use async_obdc_mssql_core::{record::try_convert, base::error::ConversionFailure};
+use async_obdc_mssql_core::base::error::ConversionFailure;
+//use async_obdc_mssql_core::base::record::try_convert;
 use quaint::{prelude::*, single::Quaint};
 
 async fn sql_test() -> Result<(), ConversionFailure> {
-    let conn = match Quaint::new("file:///tmp/example.db").await {
+    let conn = match Quaint::new("postgresql://postgres:password@localhost:5432/fastapi_prisma?schema=public").await {
         Ok(r) => r,
         Err(_) => return Err(
           ConversionFailure {
@@ -10,7 +11,7 @@ async fn sql_test() -> Result<(), ConversionFailure> {
               to: "",
           })  
       };
-    let sql = "select 1 as number;";
+    let sql = "select * from peoples;";
     let result = match conn.query_raw(sql, &[]).await {
       Ok(r) => r,
       Err(_) => return Err(
@@ -19,8 +20,11 @@ async fn sql_test() -> Result<(), ConversionFailure> {
             to: "",
         })  
     };
-    let rows = try_convert(result)?;
-    println!("{:#?}", rows);
+    for row in result.into_iter() {
+        println!("{:#?}", row)
+    }
+    //let rows = try_convert(result)?;
+    //println!("{:#?}", rows);
     Ok(())
 }
 #[tokio::main]
